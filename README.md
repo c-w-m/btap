@@ -1,4 +1,4 @@
-# Blueprints for Text Analytics Using Python
+# [Blueprints for Text Analytics Using Python](https://github.com/blueprints-for-text-analytics-python/blueprints-text.git)
 
 ## Machine Learning Based Solutions for Common Real World (NLP) Applications
 
