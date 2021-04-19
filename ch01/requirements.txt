@@ -1,1 +1,1 @@
-textacy
+textacy==0.10.1
