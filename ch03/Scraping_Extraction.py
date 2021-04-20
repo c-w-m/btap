@@ -105,7 +105,7 @@ print([e.id for e in feed.entries])
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Example: Downloading HTML pages with Python')
-% % time
+%%time
 s = requests.Session()
 for url in urls[0:10]:
     # get the part after the last / in URL and use as filename
