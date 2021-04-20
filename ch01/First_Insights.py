@@ -1,13 +1,18 @@
+print('Chapter 01: First Insights')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('setup.py')
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# setup.py
 BASE_DIR = ".."
 def figNum():
     figNum.counter += 1
     return "{0:02d}".format(figNum.counter)
 figNum.counter = 0
+FIGPREFIX = 'ch01_fig'
 
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('settings.py')
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# settings.py
 # suppress warnings
 import warnings;
 warnings.filterwarnings('ignore');
@@ -62,69 +67,77 @@ import seaborn as sns
 sns.set_style("darkgrid")
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Introducing the Dataset
-pd.options.display.max_colwidth = 150 ###
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('What you will learn and what we will build')
+print('Exploratory Data Analysis')
+print('Introducing the Dataset')
+pd.options.display.max_colwidth = 150
 file = "un-general-debates-blueprint.csv"
 file = f"{BASE_DIR}/data/un-general-debates/un-general-debates-blueprint.csv.gz" ### real location
 df = pd.read_csv(file)
 pp.pprint(df.sample(2, random_state=53))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Getting an Overview of the Data with Pandas
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Getting an Overview of the Data with Pandas')
 df['length'] = df['text'].str.len()
 
 pp.pprint(df.describe().T)
 pp.pprint(df[['country', 'speaker']].describe(include='O').T)
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Checking for Missing Data
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Checking for Missing Data')
 pp.pprint(df.isna().sum())
 
 df['speaker'].fillna('unkown', inplace=True)
 
 pp.pprint(df[df['speaker'].str.contains('Bush')]['speaker'].value_counts())
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Plotting Value Distributions
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Plotting Value Distributions')
 df['length'].plot(kind='box', vert=False, figsize=(8, 1))
-plt.savefig('fig{}_value_distribution_box.png'.format(figNum()))
+plt.savefig('{}{}_value_distribution_box.png'.format(FIGPREFIX, figNum()))
 
 df['length'].plot(kind='hist', bins=30, figsize=(8,2))
-plt.savefig('fig{}_value_distribution_histo.png'.format(figNum()))
+plt.savefig('{}{}_value_distribution_histo.png'.format(FIGPREFIX, figNum()))
 
 # Not in book: seaborn plot with gaussian kernel density estimate
 import seaborn as sns
 
 plt.figure(figsize=(8, 2))
 sns_plot = sns.distplot(df['length'], bins=30, kde=True)
-plt.savefig('fig{}_value_distribution_histo.png'.format(figNum()))
+plt.savefig('{}{}_value_distribution_histo.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Comparing Value Distributions across Categories
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Comparing Value Distributions across Categories')
 where = df['country'].isin(['USA', 'FRA', 'GBR', 'CHN', 'RUS'])
 g = sns.catplot(data=df[where], x="country", y="length", kind='box')
 g.fig.set_size_inches(4, 3)
 g.fig.set_dpi(100)
-plt.savefig('fig{}_country_value_distribution_box.png'.format(figNum()))
+plt.savefig('{}{}_country_value_distribution_box.png'.format(FIGPREFIX, figNum()))
 g = sns.catplot(data=df[where], x="country", y="length", kind='violin')
 g.fig.set_size_inches(4, 3)
 g.fig.set_dpi(100)
-plt.savefig('fig{}_country_value_distribution_violin.png'.format(figNum()))
+plt.savefig('{}{}_country_value_distribution_violin.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Visualizing Developments over Time
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Visualizing Developments over Time')
 df.groupby('year').size().plot(title="Number of Countries", figsize=(6, 2))
-plt.savefig('fig{}_development_time_line.png'.format(figNum()))
+plt.savefig('{}{}_development_time_line.png'.format(FIGPREFIX, figNum()))
 
 df.groupby('year').agg({'length': 'mean'}) \
   .plot(title="Avg. Speech Length", ylim=(0, 30000), figsize=(6, 2))
-plt.savefig('fig{}_speech_length_time_line.png'.format(figNum()))
+plt.savefig('{}{}_speech_length_time_line.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Building a Simple Text Preprocessing Pipeline
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Tokenization with Regular Expressions
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Building a Simple Text Preprocessing Pipeline')
+print('Tokenization with Regular Expressions')
 import regex as re
 
 def tokenize(text):
@@ -134,8 +147,9 @@ text = "Let's defeat SARS-CoV-2 together in 2020!"
 tokens = tokenize(text)
 print("|".join(tokens))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Treating Stop Words
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Treating Stop Words')
 import nltk
 # not in book: make sure stop words are available
 nltk.download('stopwords')
@@ -151,8 +165,9 @@ exclude_stopwords = {'against'}
 stopwords |= include_stopwords
 stopwords -= exclude_stopwords
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Processing a Pipeline with one Line of Code
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Processing a Pipeline with one Line of Code')
 pipeline = [str.lower, tokenize, remove_stop]
 
 def prepare(text, pipeline):
@@ -166,10 +181,10 @@ df['tokens'] = df['text'].progress_apply(prepare, pipeline=pipeline)
 df['num_tokens'] = df['tokens'].progress_map(len)
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprints for Word Frequency Analysis
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Counting Words with a Counter
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprints for Word Frequency Analysis')
+print('Blueprint: Counting Words with a Counter')
 from collections import Counter
 
 tokens = tokenize("She likes my cats and my cats like my sofa.")
@@ -214,15 +229,17 @@ freq_df.head(5)
 count_words(df, column='text',
             preprocess=lambda text: re.findall(r"\w{10,}", text)).head(5)
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Creating a Frequency Diagram
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Creating a Frequency Diagram')
 ax = freq_df.head(15).plot(kind='barh', width=0.95, figsize=(8,3))
 ax.invert_yaxis()
 ax.set(xlabel='Frequency', ylabel='Token', title='Top Words')
-plt.savefig('fig{}_top_word_freq.png'.format(figNum()))
+plt.savefig('{}{}_top_word_freq.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Creating Word Clouds
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Creating Word Clouds')
 from wordcloud import WordCloud
 from matplotlib import pyplot as plt
 
@@ -233,7 +250,7 @@ wc = WordCloud(max_words=100, stopwords=stopwords)
 wc.generate(text)
 plt.imshow(wc, interpolation='bilinear')
 plt.axis("off")
-plt.savefig('fig{}_2015_max100_wc_raw.png'.format(figNum()))
+plt.savefig('{}{}_2015_max100_wc_raw.png'.format(FIGPREFIX, figNum()))
 
 from wordcloud import WordCloud  ###
 from collections import Counter  ###
@@ -267,10 +284,11 @@ wordcloud(freq_2015_df['freq'], max_words=100)
 plt.subplot(1,2,2)###
 wordcloud(freq_2015_df['freq'], max_words=100, stopwords=freq_df.head(50).index)
 #plt.tight_layout()###
-plt.savefig('fig{}_2015_max100_raw_vs_rm_stopwords50.png'.format(figNum()))
+plt.savefig('{}{}_2015_max100_raw_vs_rm_stopwords50.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Ranking with TF-IDF
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Ranking with TF-IDF')
 def compute_idf(df, column='tokens', preprocess=None, min_df=2):
 
     def update(doc):
@@ -321,10 +339,11 @@ plt.subplot(2,2,4)###
 wordcloud(freq_2015['tfidf'], title='2015 - TF-IDF',
           stopwords=['seventieth'])
 
-plt.savefig('fig{}_1970-2015_TF_vs_TF-IDF.png'.format(figNum()))
+plt.savefig('{}{}_1970-2015_TF_vs_TF-IDF.png'.format(FIGPREFIX, figNum()))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Finding a Keyword in Context (KWIC)
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Finding a Keyword in Context (KWIC)')
 import random
 from textacy.text_utils import KWIC
 
@@ -350,11 +369,103 @@ def kwic(doc_series, keyword, window=35, print_samples=5):
 random.seed(22) ###
 kwic(df[df['year'] == 2015]['text'], 'sdgs', print_samples=5)
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Blueprint: Analyzing N-Grams
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Analyzing N-Grams')
+def ngrams(tokens, n=2, sep=' '):
+    return [sep.join(ngram) for ngram in zip(*[tokens[i:] for i in range(n)])]
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
+text = "the visible manifestation of the global climate change"
+tokens = tokenize(text)
+print("|".join(ngrams(tokens, 2)))
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
+def ngrams(tokens, n=2, sep=' ', stopwords=set()):
+    return [sep.join(ngram) for ngram in zip(*[tokens[i:] for i in range(n)])
+            if len([t for t in ngram if t in stopwords])==0]
+
+print("Bigrams:", "|".join(ngrams(tokens, 2, stopwords=stopwords)))
+print("Trigrams:", "|".join(ngrams(tokens, 3, stopwords=stopwords)))
+
+df['bigrams'] = df['text'].progress_apply(prepare, pipeline=[str.lower, tokenize]) \
+                          .progress_apply(ngrams, n=2, stopwords=stopwords)
+
+print(count_words(df, 'bigrams').head(5))
+
+idf_df = compute_idf(df) ### re-initialize to be safe
+# concatenate existing IDF data frame with bigram IDFs
+idf_df = pd.concat([idf_df, compute_idf(df, 'bigrams', min_df=10)])
+
+freq_df = count_words(df[df['year'] == 2015], 'bigrams')
+freq_df['tfidf'] = freq_df['freq'] * idf_df['idf']
+print(freq_df)
+
+plt.figure(figsize=(12,6)) ###
+plt.subplot(1,2,1) ###
+wordcloud(freq_df['tfidf'], title='all bigrams', max_words=50)
+
+plt.subplot(1,2,2) ###
+# plt.tight_layout() ###
+where = freq_df.index.str.contains('climate')
+wordcloud(freq_df[where]['freq'], title='"climate" bigrams', max_words=50)
+plt.savefig('{}{}_all_vs_climate_bigram_wc.png'.format(FIGPREFIX, figNum()))
+
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Blueprint: Comparing Frequencies across Time-Intervals and Categories')
+print('Creating Frequency Timelines')
+def count_keywords(tokens, keywords):
+    tokens = [t for t in tokens if t in keywords]
+    counter = Counter(tokens)
+    return [counter.get(k, 0) for k in keywords]
+
+keywords = ['nuclear', 'terrorism', 'climate', 'freedom']
+tokens = ['nuclear', 'climate', 'climate', 'freedom', 'climate', 'freedom']
+
+print(count_keywords(tokens, keywords))
+
+
+def count_keywords_by(df, by, keywords, column='tokens'):
+    freq_matrix = df[column].progress_apply(count_keywords, keywords=keywords)
+    freq_df = pd.DataFrame.from_records(freq_matrix, columns=keywords)
+    freq_df[by] = df[by]  # copy the grouping column(s)
+
+    return freq_df.groupby(by=by).sum().sort_values(by)
+
+freq_df = count_keywords_by(df, by='year', keywords=keywords)
+print(freq_df)
+
+pd.options.display.max_rows = 4
+
+pd.options.display.max_rows = 60
+
+plt_df = freq_df.plot(kind='line', figsize=(8, 3))
+plt.savefig('{}{}_top5_freq_timeline_line.png'.format(FIGPREFIX, figNum()))
+
+random.seed(23) ###
+# analyzing mentions of 'climate' before 1980
+rkwic = kwic(df.query('year < 1980')['text'], 'climate', window=35, print_samples=5)
+print(rkwic)
+
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Creating Frequency Heat Maps')
+keywords = ['terrorism', 'terrorist', 'nuclear', 'war', 'oil',
+            'syria', 'syrian', 'refugees', 'migration', 'peacekeeping',
+            'humanitarian', 'climate', 'change', 'sustainable', 'sdgs']
+
+freq_df = count_keywords_by(df, by='year', keywords=keywords)
+
+# compute relative frequencies based on total number of tokens per year
+freq_df = freq_df.div(df.groupby('year')['num_tokens'].sum(), axis=0)
+# apply square root as sublinear filter for better contrast
+freq_df = freq_df.apply(np.sqrt)
+
+plt.figure(figsize=(10, 3)) ###
+sns.set(font_scale=1) ###
+sns.heatmap(data=freq_df.T,
+            xticklabels=True, yticklabels=True, cbar=False, cmap="Reds")
+sns.set(font_scale=1) ###
+plt.savefig('{}{}_keyword_timeline_heatmap.png'.format(FIGPREFIX, figNum()))
+
+print('\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
