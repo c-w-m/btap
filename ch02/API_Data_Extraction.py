@@ -1,11 +1,17 @@
 print('Chapter 02: API Data Extraction')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('run local - not configured for colab')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('setup.py')
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 BASE_DIR = ".."
+
+
 def figNum():
     figNum.counter += 1
     return "{0:02d}".format(figNum.counter)
+
+
 figNum.counter = 0
 FIGPREFIX = 'ch02_fig'
 
@@ -14,8 +20,9 @@ print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('settings.py')
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # suppress warnings
-import warnings;
-warnings.filterwarnings('ignore');
+import warnings
+
+warnings.filterwarnings('ignore')
 
 # common imports
 import pandas as pd
@@ -36,16 +43,17 @@ import spacy
 import nltk
 
 from tqdm.auto import tqdm
+
 # register `pandas.progress_apply` and `pandas.Series.map_apply` with `tqdm`
 tqdm.pandas()
 
 # pandas display options
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#available-options
-pd.options.display.max_columns = 30 # default 20
-pd.options.display.max_rows = 60 # default 60
+pd.options.display.max_columns = 30  # default 20
+pd.options.display.max_rows = 60  # default 60
 pd.options.display.float_format = '{:.2f}'.format
 # pd.options.display.precision = 2
-pd.options.display.max_colwidth = 200 # default 50; -1 = all
+pd.options.display.max_colwidth = 200  # default 50; -1 = all
 # otherwise text between $ signs will be interpreted as formula and printed in italic
 pd.set_option('display.html.use_mathjax', False)
 
@@ -58,12 +66,13 @@ plot_params = {'figure.figsize': (8, 4),
                'axes.labelsize': 'large',
                'axes.titlesize': 'large',
                'xtick.labelsize': 'large',
-               'ytick.labelsize':'large',
+               'ytick.labelsize': 'large',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)
 
 import seaborn as sns
+
 sns.set_style("darkgrid")
 
 print('\n')
@@ -72,6 +81,7 @@ print('Load Python Settings')
 
 # to print output of all statements and not just the last
 from IPython.core.interactiveshell import InteractiveShell
+
 InteractiveShell.ast_node_interactivity = "all"
 
 # otherwise text between $ signs will be interpreted as formula and printed in italic
@@ -81,7 +91,7 @@ pd.set_option('display.html.use_mathjax', False)
 sys.path.append(BASE_DIR + '/packages')
 
 # adjust matplotlib resolution for book version
-matplotlib.rcParams.update({'figure.dpi': 200 })
+matplotlib.rcParams.update({'figure.dpi': 200})
 
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -102,25 +112,29 @@ print('server: {}'.format(response.headers['server']))
 print(response.headers)
 
 import json
+
 print(json.dumps(response.json()[0], indent=2)[:200])
 
 response = requests.get('https://api.github.com/search/repositories')
 print(response.status_code)
 
 response = requests.get('https://api.github.com/search/repositories',
-    params={'q': 'data_science+language:python'},
-    headers={'Accept': 'application/vnd.github.v3.text-match+json'})
+                        params={'q': 'data_science+language:python'},
+                        headers={'Accept': 'application/vnd.github.v3.text-match+json'})
 print(response.status_code)
 
 from IPython.display import Markdown, display  ###
+
+
 def printmd(string):  ###
     display(Markdown(string))  ###
 
+
 for item in response.json()['items'][:5]:
     print(item['name'] + ': repository ' +
-            item['text_matches'][0]['property'] + ' - \"' +
-            item['text_matches'][0]['fragment'] + '\" -- matched with ' +
-            item['text_matches'][0]['matches'][0]['text'] )
+          item['text_matches'][0]['property'] + ' - \"' +
+          item['text_matches'][0]['fragment'] + '\" -- matched with ' +
+          item['text_matches'][0]['matches'][0]['text'])
 
 response = requests.get(
     'https://api.github.com/repos/pytorch/pytorch/issues/comments')
@@ -128,6 +142,7 @@ print('Response Code', response.status_code)
 print('Number of comments', len(response.json()))
 
 print(response.links)
+
 
 def get_all_pages(url, params=None, headers=None):
     output_json = []
@@ -140,6 +155,7 @@ def get_all_pages(url, params=None, headers=None):
                 output_json += get_all_pages(next_url, params, headers)
     return output_json
 
+
 out = get_all_pages(
     "https://api.github.com/repos/pytorch/pytorch/issues/comments",
     params={
@@ -151,7 +167,7 @@ out = get_all_pages(
 df = pd.DataFrame(out)
 
 pd.set_option('display.max_colwidth', -1)
-if ('body' in df.index):
+if 'body' in df.index:
     print(df['body'].count())
     print(df[['id', 'created_at', 'body']].sample(1, random_state=42))
 
@@ -162,6 +178,7 @@ print('X-Ratelimit-Remaining', response.headers['X-Ratelimit-Remaining'])
 
 # Converting UTC time to human-readable format
 import datetime
+
 print(
     'Rate Limits reset at',
     datetime.datetime.fromtimestamp(int(
@@ -169,6 +186,7 @@ print(
 
 from datetime import datetime
 import time
+
 
 def handle_rate_limits(response):
     now = datetime.now()
@@ -180,6 +198,7 @@ def handle_rate_limits(response):
     print('Sleeping for', intervals)
     time.sleep(intervals)
     return True
+
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -197,7 +216,7 @@ http.mount("https://", retry_adapter)
 http.mount("http://", retry_adapter)
 
 response = http.get('https://api.github.com/search/repositories',
-                   params={'q': 'data_science+language:python'})
+                    params={'q': 'data_science+language:python'})
 
 for item in response.json()['items'][:5]:
     print(item['name'])
@@ -217,6 +236,7 @@ http = requests.Session()
 http.mount("https://", retry_adapter)
 http.mount("http://", retry_adapter)
 
+
 def get_all_pages(url, param=None, header=None):
     output_json = []
     response = http.get(url, params=param, headers=header)
@@ -228,7 +248,9 @@ def get_all_pages(url, param=None, header=None):
                 output_json += get_all_pages(next_url, param, header)
     return output_json
 
-out = get_all_pages("https://api.github.com/repos/pytorch/pytorch/issues/comments", param={'since': '2020-04-01T00:00:01Z'})
+
+out = get_all_pages("https://api.github.com/repos/pytorch/pytorch/issues/comments",
+                    param={'since': '2020-04-01T00:00:01Z'})
 df = pd.DataFrame(out)
 
 print('\n')
@@ -282,14 +304,16 @@ print('Number of retrieved tweets {}'.format(len(df)))
 
 print(df[['created_at', 'full_text', 'entities.hashtags']].sample(2))
 
+
 def extract_entities(entity_list):
     entities = set()
     if len(entity_list) != 0:
         for item in entity_list:
-            for key,value in item.items():
+            for key, value in item.items():
                 if key == 'text':
                     entities.add(value.lower())
     return list(entities)
+
 
 df['Entities'] = df['entities.hashtags'].apply(extract_entities)
 pd.Series(np.concatenate(df['Entities'])).value_counts()[:25].plot(kind='barh')
@@ -307,6 +331,7 @@ retrieved_tweets = [tweet._json for tweet in tweets]
 df = pd.io.json.json_normalize(retrieved_tweets)
 print('Number of retrieved tweets {}'.format(len(df)))
 
+
 def get_user_timeline(screen_name):
     api = tweepy.API(auth,
                      wait_on_rate_limit=True,
@@ -321,6 +346,7 @@ def get_user_timeline(screen_name):
     df = df[~df['retweeted_status.id'].isna()]
     return df
 
+
 df_mercedes = get_user_timeline('MercedesAMGF1')
 print('Number of Tweets from Mercedes {}'.format(len(df_mercedes)))
 df_ferrari = get_user_timeline('ScuderiaFerrari')
@@ -334,19 +360,24 @@ from wordcloud import WordCloud
 stopwords = set(nltk.corpus.stopwords.words('english'))
 RE_LETTER = re.compile(r'\b\p{L}{2,}\b')
 
+
 def tokenize(text):
     return RE_LETTER.findall(text)
+
 
 def remove_stop(tokens):
     return [t for t in tokens if t.lower() not in stopwords]
 
+
 pipeline = [str.lower, tokenize, remove_stop]
+
 
 def prepare(text):
     tokens = text
     for transform in pipeline:
         tokens = transform(tokens)
     return tokens
+
 
 def count_words(df, column='tokens', preprocess=None, min_freq=2):
     # process tokens and update counter
@@ -364,6 +395,7 @@ def count_words(df, column='tokens', preprocess=None, min_freq=2):
     freq_df.index.name = 'token'
 
     return freq_df.sort_values('freq', ascending=False)
+
 
 def wordcloud(word_freq, title=None, max_words=200, stopwords=None):
     wc = WordCloud(width=800, height=400,
@@ -386,6 +418,7 @@ def wordcloud(word_freq, title=None, max_words=200, stopwords=None):
 
     plt.imshow(wc, interpolation='bilinear')
     plt.axis("off")
+
 
 def wordcloud_blueprint(df, colName, max_words, num_stopwords):
     # Step 1: Convert input text column into tokens
@@ -413,6 +446,7 @@ plt.savefig('{}{}_mercedes_ferrari_maxwd100_numstopwd_wc.png'.format(FIGPREFIX, 
 from datetime import datetime
 import math
 
+
 class FileStreamListener(tweepy.StreamListener):
 
     def __init__(self, max_tweets=math.inf):
@@ -423,10 +457,10 @@ class FileStreamListener(tweepy.StreamListener):
         self.max_tweets = max_tweets
 
     def on_data(self, data):
-        while (self.num_files * self.TWEETS_FILE_SIZE < self.max_tweets):
+        while self.num_files * self.TWEETS_FILE_SIZE < self.max_tweets:
             self.tweets.append(json.loads(data))
             self.num_tweets += 1
-            if (self.num_tweets < self.TWEETS_FILE_SIZE):
+            if self.num_tweets < self.TWEETS_FILE_SIZE:
                 return True
             else:
                 filename = 'Tweets_' + str(datetime.now().time()) + '.txt'
@@ -448,6 +482,7 @@ class FileStreamListener(tweepy.StreamListener):
             print('Error {}'.format(status_code))
             return False
 
+
 user_access_token = 'YOUR_USER_ACCESS_TOKEN_HERE'
 user_access_secret = 'YOUR_USER_ACCESS_SECRET_HERE'
 
@@ -467,8 +502,8 @@ print(df.head(2))
 import wikipediaapi
 
 wiki_wiki = wikipediaapi.Wikipedia(
-        language='en',
-        extract_format=wikipediaapi.ExtractFormat.WIKI
+    language='en',
+    extract_format=wikipediaapi.ExtractFormat.WIKI
 )
 
 p_wiki = wiki_wiki.page('Cryptocurrency')
