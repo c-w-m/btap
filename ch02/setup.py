@@ -1,5 +1,5 @@
 # setup for chapter 02 
-import os, sys
+import os
 from subprocess import Popen, PIPE
 
 if ON_COLAB:
@@ -23,9 +23,9 @@ def run(cmd):
 if ON_COLAB:
     required_files = [
         'settings.py',
+        'Tweets_01:01:36.656960.txt',
         'packages/blueprints/exploration.py',
-        'ch02/requirements.txt',
-        'Tweets_01:01:36.656960.txt'
+        'ch02/requirements.txt'
     ]
 
     print("Downloading required files ...")
@@ -38,7 +38,7 @@ if ON_COLAB:
     print("\nAdditional setup ...")
     setup_cmds = [
         'pip install -r ch02/requirements.txt',
-	'python -m nltk.downloader stopwords'
+        'python -m nltk.downloader stopwords'
     ]
 
     for cmd in setup_cmds:
@@ -46,11 +46,11 @@ if ON_COLAB:
         if os.system(cmd) != 0:
             print('  --> ERROR')
 
-elif False:# change to True to let this run
+elif False: # change to True to let this run
     print("\nAdditional setup (may take a few minutes) ...")
     setup_cmds = [
         'pip install -r requirements.txt',
-	'python -m nltk.downloader stopwords'
+        'python -m nltk.downloader stopwords'
     ]
 
     for cmd in setup_cmds:
