@@ -23,8 +23,9 @@ def run(cmd):
 if ON_COLAB:
     required_files = [
         'settings.py',
-	'packages/blueprints/exploration.py',
-	'ch02/requirements.txt'
+        'packages/blueprints/exploration.py',
+        'ch02/requirements.txt',
+        'Tweets_01:01:36.656960.txt'
     ]
 
     print("Downloading required files ...")
