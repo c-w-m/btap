@@ -39,11 +39,11 @@ pd.set_option('display.html.use_mathjax', False)
 import matplotlib
 from matplotlib import pyplot as plt
 
-plot_params = {'figure.figsize': (8, 4), 
-               'axes.labelsize': 'large',
-               'axes.titlesize': 'large',
-               'xtick.labelsize': 'large',
-               'ytick.labelsize':'large',
+plot_params = {'figure.figsize': (8, 6), 
+               'axes.labelsize': 'small',
+               'axes.titlesize': 'small',
+               'xtick.labelsize': 'small',
+               'ytick.labelsize':'small',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)

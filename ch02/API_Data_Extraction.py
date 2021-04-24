@@ -62,11 +62,11 @@ pd.set_option('display.html.use_mathjax', False)
 import matplotlib
 from matplotlib import pyplot as plt
 
-plot_params = {'figure.figsize': (8, 4),
-               'axes.labelsize': 'large',
-               'axes.titlesize': 'large',
-               'xtick.labelsize': 'large',
-               'ytick.labelsize': 'large',
+plot_params = {'figure.figsize': (8, 6),
+               'axes.labelsize': 'small',
+               'axes.titlesize': 'small',
+               'xtick.labelsize': 'small',
+               'ytick.labelsize':'small',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)
@@ -317,6 +317,7 @@ def extract_entities(entity_list):
 
 df['Entities'] = df['entities.hashtags'].apply(extract_entities)
 pd.Series(np.concatenate(df['Entities'])).value_counts()[:25].plot(kind='barh')
+plt.tight_layout()
 plt.savefig('{}{}_top25_entities_hbar.png'.format(FIGPREFIX, figNum()))
 
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
@@ -441,6 +442,7 @@ plt.subplot(1, 2, 2)  ###
 wordcloud_blueprint(df_ferrari, 'full_text',
                     max_words=100,
                     num_stopwords=5)
+plt.tight_layout()
 plt.savefig('{}{}_mercedes_ferrari_maxwd100_numstopwd_wc.png'.format(FIGPREFIX, figNum()))
 
 from datetime import datetime

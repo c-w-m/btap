@@ -54,11 +54,11 @@ pd.set_option('display.html.use_mathjax', False)
 import matplotlib
 from matplotlib import pyplot as plt
 
-plot_params = {'figure.figsize': (8, 4),
-               'axes.labelsize': 'large',
-               'axes.titlesize': 'large',
-               'xtick.labelsize': 'large',
-               'ytick.labelsize':'large',
+plot_params = {'figure.figsize': (8, 6),
+               'axes.labelsize': 'small',
+               'axes.titlesize': 'small',
+               'xtick.labelsize': 'small',
+               'ytick.labelsize':'small',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)
@@ -105,7 +105,10 @@ print([e.id for e in feed.entries])
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Example: Downloading HTML pages with Python')
-%%time
+# %%time
+import time
+print('start stopwatch')
+tstart = time.time()
 s = requests.Session()
 for url in urls[0:10]:
     # get the part after the last / in URL and use as filename
@@ -114,6 +117,8 @@ for url in urls[0:10]:
     r = s.get(url)
     with open(file, "w+b") as f:
         f.write(r.text.encode('utf-8'))
+tend = (time.time() - tstart)
+print('end stopwatch\nelapsed time: {} seconds'.format(round(tend, 3)))
 
 with open("urls.txt", "w+b") as f:
     f.write("\n".join(urls).encode('utf-8'))
@@ -264,21 +269,27 @@ def download_article(url):
 
 def parse_article(article_file):
     def find_obfuscated_class(soup, klass):
-        return soup.find_all(lambda tag: tag.has_attr("class") and (klass in " ".join(tag["class"])))
-
+        try:
+            return soup.find_all(lambda tag: tag.has_attr("class") and (klass in " ".join(tag["class"])))
+        except Exception as err:
+            # print('find_obfuscated_class Exception: {}'.format(err))
+            return ''
     with open(article_file, "r") as f:
         html = f.read()
     r = {}
     soup = BeautifulSoup(html, 'html.parser')
-    r['url'] = soup.find("link", {'rel': 'canonical'})['href']
-    r['id'] = r['url'].split("-")[-1]
-    r['headline'] = soup.h1.text
-    r['section'] = find_obfuscated_class(soup, "ArticleHeader-channel")[0].text
-
-    r['text'] = "\n".join([t.text for t in find_obfuscated_class(soup, "Paragraph-paragraph")])
-    r['authors'] = find_obfuscated_class(soup, "Attribution-attribution")[0].text
-    r['time'] = soup.find("meta", {'property': "og:article:published_time"})['content']
-    return r
+    try:
+        r['url'] = soup.find("link", {'rel': 'canonical'})['href']
+        r['id'] = r['url'].split("-")[-1]
+        r['headline'] = soup.h1.text
+        r['section'] = find_obfuscated_class(soup, "ArticleHeader-channel")[0].text
+        r['text'] = "\n".join([t.text for t in find_obfuscated_class(soup, "Paragraph-paragraph")])
+        r['authors'] = find_obfuscated_class(soup, "Attribution-attribution")[0].text
+        r['time'] = soup.find("meta", {'property': "og:article:published_time"})['content']
+        return r
+    except Exception as err:
+        # print('Exception: {}'.format(err))
+        return r
 
 # download 10 pages of archive
 for p in range(1, 10):
@@ -308,6 +319,7 @@ print(df)
 print(df.sort_values("time"))
 
 df[df["time"]>='2020-01-01'].set_index("time").resample('D').agg({'id': 'count'}).plot.bar()
+plt.tight_layout()
 plt.savefig('{}{}_2020-01-01_bar.png'.format(FIGPREFIX, figNum()))
 
 print('\n')

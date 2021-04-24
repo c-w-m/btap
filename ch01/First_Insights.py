@@ -54,11 +54,11 @@ pd.set_option('display.html.use_mathjax', False)
 import matplotlib
 from matplotlib import pyplot as plt
 
-plot_params = {'figure.figsize': (8, 4),
-               'axes.labelsize': 'large',
-               'axes.titlesize': 'large',
-               'xtick.labelsize': 'large',
-               'ytick.labelsize':'large',
+plot_params = {'figure.figsize': (8, 6),
+               'axes.labelsize': 'small',
+               'axes.titlesize': 'small',
+               'xtick.labelsize': 'small',
+               'ytick.labelsize':'small',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)
@@ -99,9 +99,11 @@ print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Plotting Value Distributions')
 df['length'].plot(kind='box', vert=False, figsize=(8, 1))
+plt.tight_layout()
 plt.savefig('{}{}_value_distribution_box.png'.format(FIGPREFIX, figNum()))
 
 df['length'].plot(kind='hist', bins=30, figsize=(8,2))
+plt.tight_layout()
 plt.savefig('{}{}_value_distribution_histo.png'.format(FIGPREFIX, figNum()))
 
 # Not in book: seaborn plot with gaussian kernel density estimate
@@ -109,6 +111,7 @@ import seaborn as sns
 
 plt.figure(figsize=(8, 2))
 sns_plot = sns.distplot(df['length'], bins=30, kde=True)
+plt.tight_layout()
 plt.savefig('{}{}_value_distribution_histo.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -122,16 +125,19 @@ plt.savefig('{}{}_country_value_distribution_box.png'.format(FIGPREFIX, figNum()
 g = sns.catplot(data=df[where], x="country", y="length", kind='violin')
 g.fig.set_size_inches(4, 3)
 g.fig.set_dpi(100)
+plt.tight_layout()
 plt.savefig('{}{}_country_value_distribution_violin.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Visualizing Developments over Time')
 df.groupby('year').size().plot(title="Number of Countries", figsize=(6, 2))
+plt.tight_layout()
 plt.savefig('{}{}_development_time_line.png'.format(FIGPREFIX, figNum()))
 
 df.groupby('year').agg({'length': 'mean'}) \
   .plot(title="Avg. Speech Length", ylim=(0, 30000), figsize=(6, 2))
+plt.tight_layout()
 plt.savefig('{}{}_speech_length_time_line.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -235,6 +241,7 @@ print('Blueprint: Creating a Frequency Diagram')
 ax = freq_df.head(15).plot(kind='barh', width=0.95, figsize=(8,3))
 ax.invert_yaxis()
 ax.set(xlabel='Frequency', ylabel='Token', title='Top Words')
+plt.tight_layout()
 plt.savefig('{}{}_top_word_freq.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -250,6 +257,7 @@ wc = WordCloud(max_words=100, stopwords=stopwords)
 wc.generate(text)
 plt.imshow(wc, interpolation='bilinear')
 plt.axis("off")
+plt.tight_layout()
 plt.savefig('{}{}_2015_max100_wc_raw.png'.format(FIGPREFIX, figNum()))
 
 from wordcloud import WordCloud  ###
@@ -283,7 +291,7 @@ plt.subplot(1,2,1)###
 wordcloud(freq_2015_df['freq'], max_words=100)
 plt.subplot(1,2,2)###
 wordcloud(freq_2015_df['freq'], max_words=100, stopwords=freq_df.head(50).index)
-#plt.tight_layout()###
+plt.tight_layout()
 plt.savefig('{}{}_2015_max100_raw_vs_rm_stopwords50.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -339,6 +347,7 @@ plt.subplot(2,2,4)###
 wordcloud(freq_2015['tfidf'], title='2015 - TF-IDF',
           stopwords=['seventieth'])
 
+plt.tight_layout()
 plt.savefig('{}{}_1970-2015_TF_vs_TF-IDF.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -407,6 +416,7 @@ plt.subplot(1,2,2) ###
 # plt.tight_layout() ###
 where = freq_df.index.str.contains('climate')
 wordcloud(freq_df[where]['freq'], title='"climate" bigrams', max_words=50)
+plt.tight_layout()
 plt.savefig('{}{}_all_vs_climate_bigram_wc.png'.format(FIGPREFIX, figNum()))
 
 print('\n')
@@ -439,6 +449,7 @@ pd.options.display.max_rows = 4
 pd.options.display.max_rows = 60
 
 plt_df = freq_df.plot(kind='line', figsize=(8, 3))
+plt.tight_layout()
 plt.savefig('{}{}_top5_freq_timeline_line.png'.format(FIGPREFIX, figNum()))
 
 random.seed(23) ###
@@ -464,7 +475,8 @@ plt.figure(figsize=(10, 3)) ###
 sns.set(font_scale=1) ###
 sns.heatmap(data=freq_df.T,
             xticklabels=True, yticklabels=True, cbar=False, cmap="Reds")
-sns.set(font_scale=1) ###
+sns.set(font_scale=1)
+plt.tight_layout()
 plt.savefig('{}{}_keyword_timeline_heatmap.png'.format(FIGPREFIX, figNum()))
 
 print('\n')

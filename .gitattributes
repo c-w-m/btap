@@ -1,0 +1,158 @@
+# #############################################################################
+# Explicitly declare text files to normalized (native line endings) on checkout
+# in case local git does not set core.autocrlf
+# -----------------------------------------------------------------------------
+* text=auto
+
+# #############################################################################
+# Project specific stuff goes here
+# #############################################################################
+
+
+# #############################################################################
+# Text files
+# #############################################################################
+
+# ASCI
+# -----------------------------------------------------------------------------
+*.txt              text
+*.csv              text
+
+# Markup
+# -----------------------------------------------------------------------------
+*.html             text
+*.md               text
+
+# C++
+# -----------------------------------------------------------------------------
+*.c                text
+*.cpp              text
+*.h                text
+
+# Java
+# -----------------------------------------------------------------------------
+*.java             text
+
+# Python
+# -----------------------------------------------------------------------------
+*.py               text
+*.ipynb            text
+
+# Git 
+# -----------------------------------------------------------------------------
+.gitattributes     text
+.gitignore         text
+.gitmodules        text
+.dockerignore      text
+
+# Eclipse IDE
+# -----------------------------------------------------------------------------
+*.project
+
+# Visual Studio, treat these as Windows only
+# -----------------------------------------------------------------------------
+*.sln text             eol=crlf
+*.vcxproj text         eol=crlf
+*.vcxproj.filters text eol=crlf
+*.vcxproj.user text    eol=crlf
+
+# Sphinx documentation
+# -----------------------------------------------------------------------------
+docs/_build/       text
+
+
+# #############################################################################
+# Binary files
+# #############################################################################
+
+# Docs (Adobe, LibreOffice, MS Office, etc.)
+# -----------------------------------------------------------------------------
+# Adobe
+*.pdf              binary
+
+# LibreOffice
+*.ods              binary
+*.sdc              binary
+*.sxc              binary
+
+# MS Office - Word
+*.doc              binary
+*.dot              binary
+*.wbk              binary
+*.docx             binary
+*.docm             binary
+*.dotx             binary
+*.dotm             binary
+*.docb             binary
+# MS Office - Excel
+*.xls              binary
+*.xlt              binary
+*.xlm              binary
+*.xlsx             binary
+*.xlsm             binary
+*.xltx             binary
+*.xltm             binary
+# MS Office - PowerPoint
+*.ppt              binary
+*.pot              binary
+*.pps              binary
+*.pptx             binary
+
+# Images
+# -----------------------------------------------------------------------------
+*.png              binary
+*.jpg              binary
+
+# Packages, it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+# -----------------------------------------------------------------------------
+*.7z               binary
+*.dmg              binary
+*.gz               binary
+*.iso              binary
+*.jar              binary
+*.rar              binary
+*.tar              binary
+*.zip              binary
+
+# Compiled Source
+# -----------------------------------------------------------------------------
+*.com              binary
+*.class            binary
+*.dll              binary
+*.exe              binary
+*.o                binary
+*.so               binary
+*.py[cod]          binary
+*$py.class         binary
+
+# Logs and Databases
+# -----------------------------------------------------------------------------
+*.log              binary
+*.sql              binary
+*.sqlite           binary
+
+# OS generated files
+# -----------------------------------------------------------------------------
+.DS_Store          binary
+.DS_Store?         binary
+._*                binary
+.Spotlight-V100    binary
+.Trashes           binary
+ehthumbs.db        binary
+Thumbs.db          binary
+.cache/            binary
+
+# Python
+# -----------------------------------------------------------------------------
+__pycache__/       binary
+.ipynb_checkpoints binary
+.pytest_cache/     binary
+
+# Eclipse
+# -----------------------------------------------------------------------------
+.metadata/         binary
+
+# Visual Studio
+# -----------------------------------------------------------------------------
+.vs/               binary
