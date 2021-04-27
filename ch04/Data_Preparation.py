@@ -9,6 +9,10 @@ def figNum():
 figNum.counter = 0
 FIGPREFIX = 'ch04_fig'
 
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('Additional setup ...')
+print("$ 'python -m spacy download en_core_web_sm'")
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('settings.py')
@@ -54,11 +58,11 @@ pd.set_option('display.html.use_mathjax', False)
 import matplotlib
 from matplotlib import pyplot as plt
 
-plot_params = {'figure.figsize': (8, 4),
-               'axes.labelsize': 'large',
-               'axes.titlesize': 'large',
-               'xtick.labelsize': 'large',
-               'ytick.labelsize':'large',
+plot_params = {'figure.figsize': (8, 6),
+               'axes.labelsize': 'small',
+               'axes.titlesize': 'small',
+               'xtick.labelsize': 'small',
+               'ytick.labelsize':'small',
                'figure.dpi': 100}
 # adjust matplotlib defaults
 matplotlib.rcParams.update(plot_params)
@@ -96,7 +100,7 @@ column_mapping = {
     'category_2': 'subcategory',
     'category_3': None, # no data
     'in_data': None, # not needed
-    'reason_for_exclusion': None # not needed
+    'reason_for_exclusion': None    # not needed
 }
 
 # define remaining columns
@@ -109,9 +113,9 @@ df = df[df['category'] == 'autos']
 
 len(df)
 
-pd.options.display.max_colwidth = None ###
-df.sample(1, random_state=7).T
-pd.options.display.max_colwidth = 200 ###
+pd.options.display.max_colwidth = None
+print(df.sample(1, random_state=7).T)
+pd.options.display.max_colwidth = 200
 
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -159,16 +163,16 @@ def impurity(text, min_len=10):
 
 print(impurity(text))
 
-pd.options.display.max_colwidth = 100 ###
+pd.options.display.max_colwidth = 100
 # add new column to data frame
 df['impurity'] = df['text'].progress_apply(impurity, min_len=10)
 
 # get the top 3 records
-df[['text', 'impurity']].sort_values(by='impurity', ascending=False).head(3)
-pd.options.display.max_colwidth = 200 ###
+print(df[['text', 'impurity']].sort_values(by='impurity', ascending=False).head(3))
+pd.options.display.max_colwidth = 200
 
 from blueprints.exploration import count_words
-count_words(df, column='text', preprocess=lambda t: re.findall(r'<[\w/]*>', t))
+print(count_words(df, column='text', preprocess=lambda t: re.findall(r'<[\w/]*>', t)))
 
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -199,13 +203,12 @@ print("Impurity:", impurity(clean_text))
 df['clean_text'] = df['text'].progress_map(clean)
 df['impurity']   = df['clean_text'].apply(impurity, min_len=20)
 
-df[['clean_text', 'impurity']].sort_values(by='impurity', ascending=False) \
-                              .head(3)
+print(df[['clean_text', 'impurity']].sort_values(by='impurity', ascending=False).head(3))
 
 print('\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Blueprint: Character Normalization with textacy')
-text = "The café “Saint-Raphaël” is loca-\nted on Côte dʼAzur."
+text = '"The café “Saint-Raphaël” is loca-\nted on Côte dʼAzur.'
 
 import textacy.preprocessing as tprep
 
@@ -223,7 +226,7 @@ print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Blueprint: Pattern-based Data Masking with textacy')
 from textacy.preprocessing.resources import RE_URL
 
-count_words(df, column='clean_text', preprocess=RE_URL.findall).head(3)
+print(count_words(df, column='clean_text', preprocess=RE_URL.findall).head(3))
 
 from textacy.preprocessing.replace import replace_urls
 
@@ -273,7 +276,7 @@ print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Tokenization with NLTK')
 import nltk
 
-nltk.download('punkt') ###
+nltk.download('punkt')
 tokens = nltk.tokenize.word_tokenize(text)
 print(*tokens, sep='|')
 
@@ -300,7 +303,7 @@ print('Instantiating a Pipeline')
 import spacy
 nlp = spacy.load('en_core_web_sm')
 
-nlp.pipeline
+print(nlp.pipeline)
 
 nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
 
@@ -376,7 +379,7 @@ for token in doc:
 print('\n\n')
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('Blueprint: Working with Stop Words')
-nlp = spacy.load('en_core_web_sm') ###
+nlp = spacy.load('en_core_web_sm')
 text = "Dear Ryan, we need to sit down and talk. Regards, Pete"
 doc = nlp(text)
 
@@ -387,6 +390,14 @@ nlp = spacy.load('en_core_web_sm')
 nlp.vocab['down'].is_stop = False
 nlp.vocab['Dear'].is_stop = True
 nlp.vocab['Regards'].is_stop = True
+
+"""
+Not in book: Modifying stop words with a language subclass
+
+Modifying the stop word by changing the vocabulary will probably become 
+deprecated with spaCy 3.0. Instead it is recommended to create a subclass of the 
+respective language like this:
+"""
 
 # not in book: subclass approach to modify stop word lists
 # recommended from spaCy version 3.0 onwards
@@ -413,6 +424,7 @@ tokens_wo_stop = [token for token in doc]
 for token in doc:
     if not token.is_stop and not token.is_punct:
         print(token, end='|')
+
 print('\n')
 
 # reset nlp to original
@@ -435,12 +447,12 @@ print(nouns)
 import textacy
 
 tokens = textacy.extract.words(doc,
-            filter_stops = True,           # default True, no stopwords
-            filter_punct = True,           # default True, no punctuation
-            filter_nums = True,            # default False, no numbers
-            include_pos = ['ADJ', 'NOUN'], # default None = include all
-            exclude_pos = None,            # default None = exclude none
-            min_freq = 1)                  # minimum frequency of words
+                               filter_stops = True,           # default True, no stopwords
+                               filter_punct = True,           # default True, no punctuation
+                               filter_nums = True,            # default False, no numbers
+                               include_pos = ['ADJ', 'NOUN'], # default None = include all
+                               exclude_pos = None,            # default None = exclude none
+                               min_freq = 1)                  # minimum frequency of words
 
 print(*[t for t in tokens], sep='|')
 
@@ -538,6 +550,10 @@ df['text'] = df['title'] + ': ' + df['text']
 for col in nlp_columns:
     df[col] = None
 
+"""
+On Colab: Choose "Runtime"→"Change Runtime Type"→"GPU" to benefit from the GPUs.
+"""
+
 if spacy.prefer_gpu():
     print("Working on GPU.")
 else:
@@ -546,9 +562,11 @@ else:
 nlp = spacy.load('en_core_web_sm', disable=[])
 nlp.tokenizer = custom_tokenizer(nlp) # optional
 
-# full data set takes about 6-8 minutes
-# for faster processing use a sample like this
-# df = df.sample(500)
+"""
+full data set takes about 6-8 minutes
+for faster processing use a sample like this
+df = df.sample(500)
+"""
 
 batch_size = 50
 batches = math.ceil(len(df) / batch_size)  ###
@@ -563,6 +581,7 @@ for i in tqdm(range(0, len(df), batch_size), total=batches):
 print(df[['text', 'lemmas', 'nouns', 'noun_phrases', 'entities']].sample(5))
 
 df_plt = count_words(df, 'noun_phrases').head(10).plot(kind='barh', figsize=(8,3)).invert_yaxis()
+plt.tight_layout()
 plt.savefig('ch04_fig01_token_freq_hbar.png')
 
 print('\n')
@@ -580,7 +599,11 @@ print('A Note on Execution Time')
 print('There is More')
 print('Language Detection')
 print('Additional Blueprint (not in book): Language Detection with fastText')
-
+"""
+There are different trained models available on the fastText website. We will be using the smaller 
+model lid.176.ftz which has a size of less than 1 MB and is almost as accurate as the large model 
+with 126MB. See https://fasttext.cc/docs/en/language-identification.html for instructions.
+"""
 # download model
 os.system('wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz')
 
@@ -592,6 +615,20 @@ lang_model = fasttext.load_model("lid.176.ftz")
 print(lang_model.predict('"Good morning" in German is "Guten Morgen"', 3))
 
 lang_model.predict('"Good morning" in German is "Guten Morgen"', 3)
+
+"""
+The predict function takes a Unicode string as its first argument. The second, optional parameter 
+k specifies that we want the k language labels with the highest probabilities.
+
+The model returns labels in the form __label__<code>, where code is the ISO 639 language 
+code<footnote>See https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes for a complete list.
+</footnote> and probabilites for each label.
+
+Let's wrap the language identification into a preprocessing function. The function returns the detected 
+language only if the calculated probability is higher than the specified threshold, otherwise, it returns 
+the default language. This is useful for corpora like the hacker news, which is basically an English 
+corpus with some utterances from other languages.
+"""
 
 def predict_language(text, threshold=0.8, default='en'):
     # skip language detection for very short texts
@@ -610,6 +647,11 @@ def predict_language(text, threshold=0.8, default='en'):
     else:
         return lang
 
+"""
+The prediction function can now easily be applied to a data frame to identify the language of each 
+document.
+"""
+
 data = ["I don't like version 2.0 of Chat4you 😡👎",   # English
         "Ich mag Version 2.0 von Chat4you nicht 😡👎", # German
         "Мне не нравится версия 2.0 Chat4you 😡👎",    # Russian
@@ -620,7 +662,11 @@ demo_df = pd.Series(data, name='text').to_frame()
 # create new column
 demo_df['lang'] = demo_df['text'].apply(predict_language)
 
-demo_df
+print(demo_df)
+
+"""
+In order to get the real names for the language codes, we can provide a mapping dictionary.
+"""
 
 url = 'https://raw.githubusercontent.com/haliaeetus/iso-639/master/data/iso_639-1.csv'
 lang_df = pd.read_csv(url)
@@ -628,6 +674,10 @@ lang_df = lang_df[['name', '639-1', '639-2']].melt(id_vars=['name'], var_name='i
 
 # create dictionary with entries {'code': 'name'}
 iso639_languages = lang_df.set_index('code')['name'].to_dict()
+
+"""
+And we add this to our original data frame:
+"""
 
 demo_df['lang_name'] = demo_df['lang'].map(iso639_languages)
 
